@@ -42,3 +42,47 @@ def fill_nan(y):
     nans, x= nan_helper(y)
     y[nans]= np.interp(x(nans), x(~nans), y[~nans])
     return y
+        
+def butter_bandpass(lowcut, highcut, sampling_period, order=5):
+    import scipy.signal
+    sampling_frequency = 1.0/sampling_period
+    nyq = 0.5 * sampling_frequency
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = scipy.signal.butter(order, [low, high], btype='band')
+    return b, a
+
+def butter_bandpass_filter(data, lowcut, highcut, sampling_period, order=5):
+    import scipy.signal
+    b, a = butter_bandpass(lowcut, highcut, sampling_period, order=order)
+    y = scipy.signal.filtfilt(b, a, data)
+    return y
+
+def butter_lowpass(lowcut, sampling_period, order=5):
+    import scipy.signal
+    sampling_frequency = 1.0/sampling_period
+    nyq = 0.5 * sampling_frequency
+    low = lowcut / nyq
+    b, a = scipy.signal.butter( order, low, btype='low')
+    return b, a
+
+def butter_lowpass_filter(data, lowcut, sampling_period, order=5):
+    import scipy.signal
+    b, a = butter_lowpass(lowcut, sampling_period, order=order)
+    y = scipy.signal.filtfilt(b, a, data)
+    return y
+
+def butter_highpass(highcut, sampling_period, order=5):
+    import scipy.signal
+    sampling_frequency = 1.0/sampling_period
+    nyq = 0.5 * sampling_frequency
+    high = highcut / nyq 
+    b, a = scipy.signal.butter( order, high, btype='high')
+    return b, a
+
+def butter_highpass_filter(data, highcut, sampling_period, order=5):
+    import scipy.signal
+    b, a = butter_highpass(highcut, sampling_period, order=order)
+    y = scipy.signal.filtfilt(b, a, data)
+    return y
+    
