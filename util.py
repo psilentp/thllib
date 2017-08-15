@@ -1,3 +1,5 @@
+import numpy as np 
+
 def idx_by_thresh(signal,thresh = 0.1):
     import numpy as np
     idxs = np.squeeze(np.argwhere(signal > thresh))
@@ -19,6 +21,11 @@ def idx_by_thresh(signal,thresh = 0.1):
     idx_list = [x[1:] for x in idx_list]
     idx_list = [x for x in idx_list if len(x)>0]
     return idx_list
+
+def rewrap(trace,offset = np.pi/2.):
+    unwrapped = np.unwrap(trace,np.pi*1.8)
+    vel = np.diff(unwrapped)
+    return np.mod(unwrapped+np.deg2rad(offset),2*np.pi),vel
 
 def nan_helper(y):
     """Helper to handle indices and logical indices of NaNs.

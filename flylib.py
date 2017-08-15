@@ -91,7 +91,7 @@ class NetFly(object):
             fn = os.path.join(self.flypath,filename)
             with open(os.path.join(self.flypath,filename),'wb') as f:
                 f.write(string)
-            self.__dict__[filename.split('.')[0]] = data
+            self.__dict__[filename.split('.')[0]] = string
         else:
             with open(os.path.join(self.flypath,filename + '.txt'),'wb') as f:
                 f.write(string)
