@@ -25,7 +25,7 @@ def idx_by_thresh(signal,thresh = 0.1):
 def rewrap(trace,offset = np.pi/2.):
     unwrapped = np.unwrap(trace,np.pi*1.8)
     vel = np.diff(unwrapped)
-    return np.mod(unwrapped+np.deg2rad(offset),2*np.pi),vel
+    return np.mod(unwrapped+np.deg2rad(offset),1.9*np.pi),vel
 
 def nan_helper(y):
     """Helper to handle indices and logical indices of NaNs.
