@@ -96,6 +96,21 @@ class NetFly(object):
             with open(os.path.join(self.flypath,filename + '.txt'),'wb') as f:
                 f.write(string)
             self.__dict__[filename] = string
+
+    def save_py(self,string,filename):
+        if filename.split('.')[-1] == 'py':
+            fn = os.path.join(self.flypath,filename)
+            with open(os.path.join(self.flypath,filename),'wb') as f:
+                f.write(string)
+            self.__dict__[filename.split('.')[0]] = string
+        else:
+            with open(os.path.join(self.flypath,filename + '.py'),'wb') as f:
+                f.write(string)
+            self.__dict__[filename] = string
+
+    def run_py(self,filename):
+    	import subprocess
+    	return subprocess.Popen(['python',os.path.join(self.flypath,filename)])
         
     def close_signals(self):
         for f in self.h5files.values():
