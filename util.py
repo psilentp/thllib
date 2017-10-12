@@ -22,6 +22,13 @@ def idx_by_thresh(signal,thresh = 0.1):
     idx_list = [x for x in idx_list if len(x)>0]
     return idx_list
 
+def jpg2np(jpg):
+    """convert a cv2 jpg byte string image into a numpy array. Deals
+    with nan padding as used in my encoding code"""
+    import cv2
+    jpgimg = jpg[~np.isnan(jpg)].astype(np.uint8)
+    return cv2.imdecode(jpgimg,cv2.IMREAD_COLOR)
+
 def rewrap(trace,offset = np.pi/2.):
     unwrapped = np.unwrap(trace,np.pi*1.8)
     vel = np.diff(unwrapped)
