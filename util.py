@@ -54,6 +54,7 @@ def nan_helper(y):
 def fill_nan(y): 
     import numpy as np
     nans, x= nan_helper(y)
+    #print np.sum(nans)
     y[nans]= np.interp(x(nans), x(~nans), y[~nans])
     return y
         
