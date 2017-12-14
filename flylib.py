@@ -26,8 +26,12 @@ class NetFly(object):
             self.tiffpaths = [fn for fn in self.flatpaths if fn[-4:] == 'tif']
         except(IndexError):
             pass
+        try:
+            self.pngpaths = [fn for fn in self.flatpaths if fn[-3:] == 'png']
+        except(IndexError):
+            pass
         
-    def open_signals(self,extensions = ['hdf5','txt','cpkl','tif'],verbose = False):
+    def open_signals(self,extensions = ['hdf5','txt','cpkl','tif','png'],verbose = False):
         self.h5files = dict()
         if not(type(extensions) is list):
             extensions = [extensions]
@@ -53,6 +57,11 @@ class NetFly(object):
         if 'tif' in extensions:
             from skimage import io
             for fn in self.tiffpaths:
+                key = fn.splsit('/')[-1].split('.')[0]
+                self.__dict__[key] = io.imread(fn)
+        if 'png' in extensions:
+            from skimage import io
+            for fn in self.pngpaths:
                 key = fn.split('/')[-1].split('.')[0]
                 self.__dict__[key] = io.imread(fn)
     
