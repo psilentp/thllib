@@ -118,9 +118,25 @@ class NetFly(object):
             self.__dict__[filename] = string
 
     def run_py(self,filename):
-    	import subprocess
-    	return subprocess.Popen(['python',os.path.join(self.flypath,filename)])
+        import subprocess
+        return subprocess.Popen(['python',os.path.join(self.flypath,filename)])
         
     def close_signals(self):
         for f in self.h5files.values():
             f.close()
+
+    def get_last_git_comment(self):
+        "return a dictionary with the last comments for the repos tracked in the git_SHA.txt file"
+        import os
+        if os.path.join(self.flypath,'git_SHA.txt') in self.txtpaths:
+            self.open_signals(extensions = ['txt'])
+            cmnd_strs = ["git -C '%s' show --no-patch --oneline %s"%tuple(sh.split(':')) for sh in self.git_SHA]
+            cmmt_strs = [(r.split(':')[0].split('/')[-1],os.popen(s.strip()).read()) for r,s in zip(self.git_SHA,cmnd_strs)]
+            cmmt_dict = dict()
+            for k,v in cmmt_strs:
+                cmmt_dict[k] = v
+            return cmmt_dict
+        else:
+            import warnings
+            warnings.warn('Fly%s does not contain a git_SHA.txt file'%(self.flynum))
+            return {}
