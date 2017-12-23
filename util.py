@@ -49,7 +49,7 @@ def nan_helper(y):
         >>> y[nans]= np.interp(x(nans), x(~nans), y[~nans])
     """
     import numpy as np
-    return np.isnan(y), lambda z: z.nonzero()[0]
+    return ~np.isfinite(y), lambda z: z.nonzero()[0]
 
 def fill_nan(y): 
     import numpy as np
