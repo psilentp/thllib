@@ -30,8 +30,16 @@ class NetFly(object):
             self.pngpaths = [fn for fn in self.flatpaths if fn[-3:] == 'png']
         except(IndexError):
             pass
+        try:
+            self.bagpaths = [fn for fn in self.flatpaths if fn[-3:] == 'bag']
+        except(IndexError):
+            pass
+        try:
+            self.abfpaths = [fn for fn in self.flatpaths if fn[-3:] == 'abf']
+        except(IndexError):
+            pass
         
-    def open_signals(self,extensions = ['hdf5','txt','cpkl','tif','png'],verbose = False):
+    def open_signals(self,extensions = ['hdf5','txt','cpkl','tif','png','bag'],verbose = False):
         self.h5files = dict()
         if not(type(extensions) is list):
             extensions = [extensions]

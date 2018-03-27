@@ -2,7 +2,7 @@ import numpy as np
 
 def idx_by_thresh(signal,thresh = 0.1):
     import numpy as np
-    idxs = np.squeeze(np.argwhere(signal > thresh))
+    idxs = np.squeeze(np.argwhere((signal > thresh).astype(np.int)))
     try:
         split_idxs = np.squeeze(np.argwhere(np.diff(idxs) > 1))
     except IndexError:
