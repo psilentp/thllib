@@ -1,13 +1,15 @@
 import numpy as np
-import neo
+#import neo
 
-class SpikePool(neo.SpikeTrain):
+class SpikePool(object):
     """hold a Sub group of spikes for further processing - keep track of spike
     pool and spike pool indecies so it is easy to mix the results back in"""
-    def __init__(self,*args,**argv):
-        super(SpikePool,self).__init__(args,argv)
-        self.wv_mtrx = np.vstack([np.array(wv) for wv in self.waveforms])
-        self.time_mtrx = np.vstack([wf.times for wf in self.waveforms])
+    def __init__(self,wv_mtrx,time_mtrx):
+        #super(SpikePool,self).__init__(args,argv)
+        #self.wv_mtrx = np.vstack([np.array(wv) for wv in self.waveforms])
+        #self.time_mtrx = np.vstack([wf.times for wf in self.waveforms])
+        self.wv_mtrx = wv_mtrx
+        self.time_mtrx = time_mtrx
         self.spk_ind = np.arange(0,np.shape(self.wv_mtrx)[0])
             
     def copy_slice(self,sli,rezero = False):
@@ -45,10 +47,9 @@ class SpikePool(neo.SpikeTrain):
 class SpkCollection(object):
     """class to hold the data for a collection of spikes.holds the matrx of waveforms
     and indxs from the trace that correspond to those waveforms""" 
-    def __init__(self,spike_pool,selection_mask,params):
+    def __init__(self,spike_pool,selection_mask):
         self.spike_pool = spike_pool
         self.selection_mask = selection_mask
-        self.params = params
         
     def collection_wvmtrx(self):
         """return the matrix of waveforms"""
@@ -90,8 +91,9 @@ class SpkSelector(SpkCollection):
 class SpkTransformer(SpkCollection):
     """spike collection that can return a matrix of transformed waveforms for further 
     sorting"""
-    def __init__(self,spike_pool,selection_mask,params):
-        super(SpkTransformer,self).__init__(spike_pool,selection_mask,params)
+    def __init__(self,spike_pool,selection_mask,params = {'trans_dims':1}):
+        super(SpkTransformer,self).__init__(spike_pool,selection_mask)
+        self.params = params
         self.trnsmtrx = np.zeros((np.shape(self.spike_pool.wv_mtrx)[0],
                                  self.params['trans_dims']))
         
@@ -130,14 +132,14 @@ class SpectralCluster(SpkSelector):
         self.labels[self.collection_ind()] = labels
         
 class P2PTransform(SpkTransformer):
+    """peak to peak transformer, trnsmtrx[:,0] contains the
+    peak to peak magnitude and trnsmtrx[:,1] contains the 
+    peak to peak time difference"""
     def transform(self):
         wv_mtrx = self.collection_wvmtrx()
         p2p = np.max(wv_mtrx,axis = 1) -np.min(wv_mtrx,axis = 1)
         p2pt = np.argmax(wv_mtrx,axis = 1) - np.argmin(wv_mtrx,axis = 1)
-        print(np.shape(p2p))
-        print(np.shape(p2pt))
         self.trnsmtrx = np.hstack((np.array([p2p]).T,np.array([p2pt]).T))
-    
     
 class KMeansCluster(SpkSelector):
     def select(self):
