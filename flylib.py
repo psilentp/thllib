@@ -125,9 +125,18 @@ class NetFly(object):
                 f.write(string)
             self.__dict__[filename] = string
 
-    def run_py(self,filename):
+    def run_py(self,filename,pass_flynum = False):
         import subprocess
-        return subprocess.Popen(['python',os.path.join(self.flypath,filename)])
+        if pass_flynum:
+            return subprocess.Popen(['python',
+                                     os.path.join(self.flypath,filename),
+                                     str(self.flynum)])
+        else:
+            return subprocess.Popen(['python',os.path.join(self.flypath,filename)])
+        
+    def copy_to_flydir(self,filename):
+        import shutil
+        shutil.copy(filename,self.flypath)
         
     def close_signals(self):
         for f in self.h5files.values():
